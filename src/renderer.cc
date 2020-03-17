@@ -7,33 +7,15 @@ const static int DEFAULT_RENDERING_DRIVER = -1;
 Renderer::Renderer(
     std::string title,
     const uint32_t width,
-    const uint32_t height
+    const uint32_t height,
+    SDL_Window* window,
+    SDL_Renderer* renderer
 ) :
     m_width(width),
-    m_height(height)
+    m_height(height),
+    m_window(window),
+    m_renderer(renderer)
 {
-    m_window = SDL_CreateWindow(
-            title.data(),
-            SDL_WINDOWPOS_UNDEFINED, // as of now i dont care about initial
-            SDL_WINDOWPOS_UNDEFINED, // position of the window.
-            width,
-            height,
-            SDL_WINDOW_SHOWN
-            );
-
-    if (!m_window) {
-        throw std::exception();
-    }
-
-    m_renderer = SDL_CreateRenderer(
-                m_window,
-                DEFAULT_RENDERING_DRIVER,
-                SDL_RENDERER_ACCELERATED);
-
-    if (!m_renderer) {
-        SDL_DestroyWindow(m_window);
-        throw std::exception();
-    }
 } 
 
 Renderer::~Renderer() {
@@ -49,5 +31,37 @@ void Renderer::fill_pixel(const uint32_t x, const uint32_t y,
 
 void Renderer::display() {
     SDL_RenderPresent(m_renderer);
+}
+
+Renderer create_renderer(
+    std::string title,
+    const uint32_t width,
+    const uint32_t height
+) {
+    SDL_Window* window(SDL_CreateWindow(
+                title.data(),
+                SDL_WINDOWPOS_UNDEFINED, // as of now i dont care about initial
+                SDL_WINDOWPOS_UNDEFINED, // position of the window.
+                width,
+                height,
+                SDL_WINDOW_SHOWN
+                )
+            );
+
+    if (!window) {
+        throw std::exception();
+    }
+    SDL_Renderer* renderer(SDL_CreateRenderer(
+                window,
+                DEFAULT_RENDERING_DRIVER,
+                SDL_RENDERER_ACCELERATED
+                )
+            );
+
+    if (!renderer) {
+        SDL_DestroyWindow(window);
+        throw std::exception();
+    }
+    return Renderer(title, width, height, window, renderer);
 }
 

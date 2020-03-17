@@ -15,7 +15,7 @@ public:
         m_height(height),
         m_min_value(Function::at(0, 0)),
         m_max_value(Function::at(0, 0)),
-        m_renderer(title, width, height)
+        m_renderer(create_renderer(title, width, height))
     {}
 
     void display() {
