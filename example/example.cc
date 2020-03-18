@@ -5,10 +5,10 @@
 int logic() {
     const uint32_t width = 500;
     const uint32_t height = 500;
-    std::string title = "f(x, y) = x^2 - y^2";
+    std::string title = "f(x, y) = x + y";
 
     std::function<int32_t(uint32_t, uint32_t)> heatmap_function = 
-        [](uint32_t x, uint32_t y) { return x * x - y * y; };
+        [](uint32_t x, uint32_t y) { return x + y; };
 
     Heatmap heatmap(title, width, height, std::move(heatmap_function));
 
