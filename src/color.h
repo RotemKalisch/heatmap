@@ -7,6 +7,17 @@ public:
         r(r), g(g), b(b), alpha(alpha)
     {}
 
+    uint32_t encode_color_rgba8888() const {
+        uint32_t encoding = r;
+        encoding <<= 8;
+        encoding |= g;
+        encoding <<= 8;
+        encoding |= b;
+        encoding <<= 8;
+        encoding |= alpha;
+        return encoding;
+    }
+
     uint8_t r;
     uint8_t g;
     uint8_t b;
