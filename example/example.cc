@@ -13,8 +13,7 @@ int logic() {
             return (x*y + 500*t) % 25000; 
         };
 
-    Heatmap<int32_t, uint32_t, uint32_t> heatmap(title, width, height,
-            std::move(heatmap_function));
+    Heatmap heatmap(title, width, height, std::move(heatmap_function));
 
     bool quit = false;
     SDL_Event e;
@@ -32,18 +31,14 @@ int logic() {
                 quit = true;
             }
         }
-
         heatmap.display(t, 1);
         ++t;
     }
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>
         (end - begin).count();
-
     std::cout << "FPS: " << 1000 * (double)t / ms << std::endl;
-
 
     return 0;
 }

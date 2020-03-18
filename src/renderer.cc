@@ -37,13 +37,13 @@ void Renderer::lock() {
                      therefore it's not used */
         );
     if (result < 0 || !m_pixels) {
-        throw RendererException(std::move("SDL_LockTexture failed"));
+        throw RendererException("SDL_LockTexture failed");
     }
 }
 
 void Renderer::unlock() {
     if (!m_pixels) {
-        throw RendererException(std::move("SDL_UnlockTexture failed because lock was not invoked"));
+        throw RendererException("SDL_UnlockTexture failed because lock was not invoked");
     }
     SDL_UnlockTexture(m_texture);
     m_pixels = nullptr;
@@ -56,7 +56,8 @@ void Renderer::fill_pixel(uint32_t x, uint32_t y,
      * to the normal one (x left to right, y down to up)
      */
     y = m_height - y;
-    static_cast<uint32_t*>(m_pixels)[y * m_height + x] = encode_color_rgba8888(color);
+    static_cast<uint32_t*>(m_pixels)[y * m_height + x] =
+        color.encode_color_rgba8888();
 }
 
 void Renderer::display() {
@@ -65,16 +66,6 @@ void Renderer::display() {
     SDL_RenderClear(m_renderer);
 }
 
-uint32_t Renderer::encode_color_rgba8888(const Color& color) const {
-    uint32_t encoding = color.r;
-    encoding <<= 8;
-    encoding |= color.g;
-    encoding <<= 8;
-    encoding |= color.b;
-    encoding <<= 8;
-    encoding |= color.alpha;
-    return encoding;
-}
 
 Renderer create_renderer(
     const std::string& title,
@@ -92,7 +83,7 @@ Renderer create_renderer(
             );
 
     if (!window) {
-        throw RendererException(std::move("SDL_CreateWindow failed"));
+        throw RendererException("SDL_CreateWindow failed");
     }
 
     SDL_Renderer* renderer(SDL_CreateRenderer(
@@ -104,7 +95,7 @@ Renderer create_renderer(
 
     if (!renderer) {
         SDL_DestroyWindow(window);
-        throw RendererException(std::move("SDL_CreateRenderer failed"));
+        throw RendererException("SDL_CreateRenderer failed");
     }
     
     SDL_Texture* texture (SDL_CreateTexture(
@@ -119,7 +110,7 @@ Renderer create_renderer(
     if (!texture) {
         SDL_DestroyRenderer(renderer); 
         SDL_DestroyWindow(window);
-        throw RendererException(std::move("SDL_CreateTexture failed"));
+        throw RendererException("SDL_CreateTexture failed");
     }
 
     return Renderer(width, height, window, renderer, texture);
