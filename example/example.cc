@@ -12,8 +12,9 @@ public:
 int logic() {
     const uint32_t width = 500;
     const uint32_t height = 500;
+    std::string title = "f(x, y) = x^2 - y^2";
 
-    Heatmap<Function> heatmap("f(x, y) = x^2 - y^2", width, height);
+    Heatmap<Function> heatmap(title, width, height);
 
     heatmap.display();
             

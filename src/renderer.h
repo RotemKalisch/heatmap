@@ -8,8 +8,8 @@
 
 struct Renderer {
 public:
-    Renderer(std::string title, const uint32_t width, const uint32_t height,
-            SDL_Window* window, SDL_Renderer* renderer);
+    Renderer(const uint32_t width, const uint32_t height, SDL_Window* window,
+            SDL_Renderer* renderer);
 
     /// This destructor is being called to clean up sdl environment
     ~Renderer();
@@ -25,6 +25,6 @@ private:
     SDL_Renderer* m_renderer;
 };
 
-Renderer create_renderer(std::string title, const uint32_t width,
+Renderer create_renderer(const std::string& title, const uint32_t width,
         const uint32_t height);
 

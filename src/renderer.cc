@@ -1,11 +1,12 @@
 #include <exception>
 
+#include "renderer_exceptions.h"
+
 #include "renderer.h"
 
 const static int DEFAULT_RENDERING_DRIVER = -1;
 
 Renderer::Renderer(
-    std::string title,
     const uint32_t width,
     const uint32_t height,
     SDL_Window* window,
@@ -15,8 +16,7 @@ Renderer::Renderer(
     m_height(height),
     m_window(window),
     m_renderer(renderer)
-{
-} 
+{} 
 
 Renderer::~Renderer() {
     SDL_DestroyRenderer(m_renderer); 
@@ -25,7 +25,7 @@ Renderer::~Renderer() {
 
 void Renderer::fill_pixel(const uint32_t x, const uint32_t y,
         const Color& color) {
-    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a); 
+    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.alpha); 
     SDL_RenderDrawPoint(m_renderer, x, m_width - y);
 }
 
@@ -34,7 +34,7 @@ void Renderer::display() {
 }
 
 Renderer create_renderer(
-    std::string title,
+    const std::string& title,
     const uint32_t width,
     const uint32_t height
 ) {
@@ -49,8 +49,9 @@ Renderer create_renderer(
             );
 
     if (!window) {
-        throw std::exception();
+        throw RendererException(std::move("SDL_CreateWindow failed"));
     }
+
     SDL_Renderer* renderer(SDL_CreateRenderer(
                 window,
                 DEFAULT_RENDERING_DRIVER,
@@ -60,8 +61,9 @@ Renderer create_renderer(
 
     if (!renderer) {
         SDL_DestroyWindow(window);
-        throw std::exception();
+        throw RendererException(std::move("SDL_CreateRenderer failed"));
     }
-    return Renderer(title, width, height, window, renderer);
+
+    return Renderer(width, height, window, renderer);
 }
 
