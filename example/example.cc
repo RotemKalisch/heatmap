@@ -3,17 +3,23 @@
 
 #include "heatmap.h"
 
+struct Function {
+public:
+    using result_type = int32_t;
+
+    result_type operator()(uint32_t x, uint32_t y, uint32_t t) {
+        return (x*y + 512*t) & 0x000003FFF; 
+    }
+    
+};
+
 int logic() {
-    const uint32_t width = 500;
-    const uint32_t height = 500;
-    std::string title = "f(x, y, t) = x*y + 500*t % 25000";
+    constexpr uint32_t width = 512;
+    constexpr uint32_t height = width;
 
-    std::function<int32_t(uint32_t, uint32_t, uint32_t)> heatmap_function = 
-        [](uint32_t x, uint32_t y, uint32_t t) {
-            return (x*y + 500*t) % 25000; 
-        };
+    std::string title = "f(x, y, t) = x*y + 512*t % 512^2";
 
-    Heatmap heatmap(title, width, height, std::move(heatmap_function));
+    Heatmap heatmap(title, width, height, Function());
 
     bool quit = false;
     SDL_Event e;

@@ -55,7 +55,7 @@ void Renderer::fill_pixel(uint32_t x, uint32_t y,
      * Transforming from SDL coordinate system (x left to right, y up to down)
      * to the normal one (x left to right, y down to up)
      */
-    y = m_height - y;
+    //y = m_height - y;
     static_cast<uint32_t*>(m_pixels)[y * m_height + x] =
         color.encode_color_rgba8888();
 }

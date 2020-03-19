@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <functional>
 #include <algorithm>
 #include <iostream>
 
@@ -30,12 +29,12 @@ public:
         set_min_and_max(t);
         m_renderer.lock();
         for (uint32_t outer_x = 0; outer_x < m_width / resolution; ++outer_x) {
-            for (uint32_t outer_y = 0; outer_y < m_height / resolution; ++outer_y) {
+            for (uint32_t outer_y = 0; outer_y < m_width / resolution; ++outer_y) {
                 Color color = color_value(
                         m_function(outer_x, outer_y, t));
                 for (uint32_t inner_x = 0; inner_x < resolution; ++inner_x) {
                     for (uint32_t inner_y = 0; inner_y < resolution; ++inner_y) {
-                        uint32_t x = outer_x * resolution + inner_x;
+                       uint32_t x = outer_x * resolution + inner_x;
                         uint32_t y = outer_y * resolution + inner_y;
                         m_renderer.fill_pixel(x, y, color);
                     }
