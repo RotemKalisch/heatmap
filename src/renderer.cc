@@ -56,7 +56,7 @@ void Renderer::fill_pixel(uint32_t x, uint32_t y,
      * to the normal one (x left to right, y down to up)
      */
     //y = m_height - y;
-    static_cast<uint32_t*>(m_pixels)[y * m_height + x] =
+    static_cast<uint32_t*>(m_pixels)[y * m_width + x] =
         color.encode_color_rgba8888();
 }
 
@@ -78,7 +78,7 @@ Renderer create_renderer(
                 SDL_WINDOWPOS_UNDEFINED, // position of the window.
                 width,
                 height,
-                SDL_WINDOW_SHOWN
+                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN
                 )
             );
 

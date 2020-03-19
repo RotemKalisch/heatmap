@@ -8,16 +8,16 @@ public:
     using result_type = int32_t;
 
     result_type operator()(uint32_t x, uint32_t y, uint32_t t) {
-        return (x*y + 512*t) & 0x000003FFF; 
+        return (x*y + 512*t) & 0x00000FFFF; 
     }
     
 };
 
 int logic() {
-    constexpr uint32_t width = 512;
-    constexpr uint32_t height = width;
+    constexpr uint32_t width = 1920 / 2;
+    constexpr uint32_t height = 984 / 2;
 
-    std::string title = "f(x, y, t) = x*y + 512*t % 512^2";
+    std::string title = "f(x, y, t) = x*y + (2^9)*t % 2^16";
 
     Heatmap heatmap(title, width, height, Function());
 
