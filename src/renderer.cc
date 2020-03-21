@@ -32,7 +32,7 @@ void Renderer::lock() {
     int result = SDL_LockTexture(
             m_texture,
             nullptr, // we lock the entire texture
-            &m_pixels,
+            (void**)(&m_pixels),
             &pitch /* pitch will be stored here. as of now - it is height,
                      therefore it's not used */
         );

@@ -23,12 +23,21 @@ public:
     /// Call this function after lock and before unlock.
     void fill_pixel(uint32_t x, uint32_t y, const Color& color);
 
+    template <uint32_t N>
+    void fill_pixels(uint32_t x, uint32_t y, const Color* colors) {
+        /*
+        for (size_t i = 0; i < N; ++i) {
+            m_pixels[y * m_width + x] = colors[i];
+        }
+        */
+        // std::copy(colors, colors + N, &(m_pixels[y * m_width + x]));
+        memcpy(&(m_pixels[y * m_width + x]), colors, N * sizeof(Color));
+    }
+
     /// Call this function after unlock.
     void display();
 
 private:
-
-    uint32_t encode_color_rgba8888(const Color& color) const;
 
     const uint32_t m_width;
     const uint32_t m_height;
@@ -40,7 +49,7 @@ private:
      * The actual pixels used by SDL.
      * The format is RGBA8888 - 32 bit per pixel.
      */
-    void* m_pixels;
+    uint32_t* m_pixels;
 };
 
 Renderer create_renderer(const std::string& title, const uint32_t width,

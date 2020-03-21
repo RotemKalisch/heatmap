@@ -25,20 +25,14 @@ public:
         m_renderer(create_renderer(title, width, height))
     {}
 
-    void display(uint32_t t, uint32_t resolution = 1) {
+    void display(uint32_t t) {
         set_min_and_max(t);
         m_renderer.lock();
-        for (uint32_t outer_x = 0; outer_x < m_width / resolution; ++outer_x) {
-            for (uint32_t outer_y = 0; outer_y < m_height / resolution; ++outer_y) {
+        for (uint32_t x = 0; x < m_width; ++x) {
+            for (uint32_t y = 0; y < m_height; ++y) {
                 Color color = color_value(
-                        m_function(outer_x, outer_y, t));
-                for (uint32_t inner_x = 0; inner_x < resolution; ++inner_x) {
-                    for (uint32_t inner_y = 0; inner_y < resolution; ++inner_y) {
-                       uint32_t x = outer_x * resolution + inner_x;
-                        uint32_t y = outer_y * resolution + inner_y;
-                        m_renderer.fill_pixel(x, y, color);
-                    }
-                }
+                        m_function(x, y, t));
+                        m_renderer.fill_pixels<1>(x, y, &color);
             }
         }
         m_renderer.unlock();

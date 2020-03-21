@@ -37,7 +37,7 @@ int logic() {
                 quit = true;
             }
         }
-        heatmap.display(t, 1);
+        heatmap.display(t);
         ++t;
     }
 
