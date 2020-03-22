@@ -6,10 +6,11 @@
 
 #include "renderer.h"
 
+// TODO: change c-style arrays to std::array
+
 template<class HeatmapFunction>
 struct Heatmap {
 public:
-
     using ResultType = typename HeatmapFunction::result_type;
     static constexpr uint32_t N = HeatmapFunction::N;
 
@@ -54,7 +55,6 @@ public:
     }
 
 private:
-
     static const uint8_t MAX_COLOR = 255;
     static const uint8_t NO_COLOR = 0;
 
@@ -82,6 +82,7 @@ private:
     }
 
     void color_values(ResultType values[N], Color colors[N]) {
+        // TODO: specialization with sse too.
         for (uint32_t i = 0; i < N; ++i) {
             colors[i] = color_value(values[i]);
         }
