@@ -1,16 +1,33 @@
 #include <chrono>
 #include <exception>
+#include <immintrin.h>
 
 #include "heatmap.h"
 
+/*
+for (uint32_t i = 0; i < N; ++i) {
+    return_values[i] = ((x+i)*y + 512*t) & 0xFFFF;
+}
+*/
 struct Function {
 public:
-    using result_type = int32_t;
+    using result_type = uint32_t;
+    static constexpr uint32_t N = 8;
 
-    result_type operator()(uint32_t x, uint32_t y, uint32_t t) {
-        return (x*y + 512*t) & 0x0000FFFF; 
+    void operator()(uint32_t x, uint32_t y, uint32_t t,
+        result_type* return_values) {
+        __m256i* return_values_256 = reinterpret_cast<__m256i*>(return_values);
+        *return_values_256 = _mm256_set_epi32(7, 6, 5, 4, 3, 2, 1, 0); // i values
+        __m256i x_vector = _mm256_set1_epi32(x); // x values
+        __m256i y_vector = _mm256_set1_epi32(y); // y values
+        *return_values_256 = _mm256_add_epi32(*return_values_256, x_vector); // (x+i)
+        *return_values_256 = _mm256_mullo_epi32(*return_values_256, y_vector); // (x+i)*y
+        __m256i t_vector = _mm256_set1_epi32(t); // t values
+        t_vector = _mm256_slli_epi32(t_vector, 9); // t << 9 = 512 * t
+        *return_values_256 = _mm256_add_epi32(*return_values_256, t_vector); // (x+i)*y + 512*t
+        __m256i masks_vector = _mm256_set1_epi32(0xFFFF);
+        *return_values_256 = _mm256_and_si256(*return_values_256, masks_vector);
     }
-    
 };
 
 int logic() {

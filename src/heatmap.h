@@ -11,6 +11,7 @@ struct Heatmap {
 public:
 
     using ResultType = typename HeatmapFunction::result_type;
+    static constexpr uint32_t N = HeatmapFunction::N;
 
     /**
      * range_changing determines if for all t the heatmap needs to calculate
@@ -39,11 +40,13 @@ public:
             set_min_and_max(t);
         }
         m_renderer.lock();
-        for (uint32_t x = 0; x < m_width; ++x) {
-            for (uint32_t y = 0; y < m_height; ++y) {
-                Color color = color_value(
-                        m_function(x, y, t));
-                        m_renderer.fill_pixels<1>(x, y, &color);
+        Color colors[N];
+        ResultType function_values[N] __attribute__ ((__aligned__(32)));
+        for (uint32_t y = 0; y < m_height; ++y) {
+            for (uint32_t x = 0; x < m_width; x += N) {
+                m_function(x, y, t, function_values);
+                color_values(function_values, colors);
+                m_renderer.fill_pixels<N>(x, y, colors);
             }
         }
         m_renderer.unlock();
@@ -56,11 +59,14 @@ private:
     static const uint8_t NO_COLOR = 0;
 
     void set_min_and_max(uint32_t t) {
-        for (uint32_t i = 0; i < m_width; ++i) {
-            for (uint32_t j = 0; j < m_height; ++j) {
-                ResultType value = m_function(i, j, t);
-                m_min_function_value = std::min(m_min_function_value, value);
-                m_max_function_value = std::max(m_max_function_value, value);
+        ResultType values[N] __attribute__ ((__aligned__(32)));
+        for (uint32_t y = 0; y < m_height; ++y) {
+            for (uint32_t x = 0; x < m_width; x += N) {
+                m_function(x, y, t, values);
+                for (uint32_t i = 0; i < N; ++i) {
+                    m_min_function_value = std::min(m_min_function_value, values[i]);
+                    m_max_function_value = std::max(m_max_function_value, values[i]);
+                }
             }
         }
     }
@@ -73,6 +79,12 @@ private:
                 NO_COLOR,
                 MAX_COLOR
             );
+    }
+
+    void color_values(ResultType values[N], Color colors[N]) {
+        for (uint32_t i = 0; i < N; ++i) {
+            colors[i] = color_value(values[i]);
+        }
     }
 
     uint32_t m_width;
