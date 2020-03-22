@@ -23,14 +23,13 @@ public:
     /// Call this function after lock and before unlock.
     void fill_pixel(uint32_t x, uint32_t y, const Color& color);
 
+    /**
+     * Function fills N pixels.
+     * Pixels filled are (x, y), (x+1, y), ..., (x+N, y).
+     * Note that if end of width is reached, the next pixel filled is (0, y+1).
+     */
     template <uint32_t N>
     void fill_pixels(uint32_t x, uint32_t y, const Color* colors) {
-        /*
-        for (size_t i = 0; i < N; ++i) {
-            m_pixels[y * m_width + x] = colors[i];
-        }
-        */
-        // std::copy(colors, colors + N, &(m_pixels[y * m_width + x]));
         memcpy(&(m_pixels[y * m_width + x]), colors, N * sizeof(Color));
     }
 

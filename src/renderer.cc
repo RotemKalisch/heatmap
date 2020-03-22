@@ -32,7 +32,7 @@ void Renderer::lock() {
     int result = SDL_LockTexture(
             m_texture,
             nullptr, // we lock the entire texture
-            (void**)(&m_pixels),
+            reinterpret_cast<void**>(&m_pixels),
             &pitch /* pitch will be stored here. as of now - it is height,
                      therefore it's not used */
         );
@@ -51,11 +51,6 @@ void Renderer::unlock() {
 
 void Renderer::fill_pixel(uint32_t x, uint32_t y,
         const Color& color) {
-    /*
-     * Transforming from SDL coordinate system (x left to right, y up to down)
-     * to the normal one (x left to right, y down to up)
-     */
-    //y = m_height - y;
     static_cast<uint32_t*>(m_pixels)[y * m_width + x] = color;
 }
 
