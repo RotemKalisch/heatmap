@@ -15,18 +15,32 @@ public:
 
     using ResultType = typename HeatmapFunction::result_type;
 
-    Heatmap(const std::string& title, uint32_t width, uint32_t height,
-            HeatmapFunction function) :
+    /**
+     * range_changing determines if for all t the heatmap needs to calculate
+     * the function's new min and max or if it is static for all t.
+     */
+    Heatmap(
+        const std::string& title,
+        uint32_t width,
+        uint32_t height,
+        HeatmapFunction function,
+        ResultType min,
+        ResultType max,
+        bool range_changing
+    ) :
         m_width(width),
         m_height(height),
         m_function(std::move(function)),
-        m_min_function_value(m_function(0, 0, 0)),
-        m_max_function_value(m_function(0, 0, 0)),
-        m_renderer(create_renderer(title, width, height))
+        m_min_function_value(min),
+        m_max_function_value(max),
+        m_renderer(create_renderer(title, width, height)),
+        m_range_changing(range_changing)
     {}
 
     void display(uint32_t t) {
-        set_min_and_max(t);
+        if (m_range_changing) {
+            set_min_and_max(t);
+        }
         m_renderer.lock();
         for (uint32_t x = 0; x < m_width; ++x) {
             for (uint32_t y = 0; y < m_height; ++y) {
@@ -41,6 +55,7 @@ public:
 
 private:
     void set_min_and_max(uint32_t t) {
+        /*
         for (uint32_t i = 0; i < m_width; ++i) {
             for (uint32_t j = 0; j < m_height; ++j) {
                 ResultType value = m_function(i, j, t);
@@ -48,6 +63,9 @@ private:
                 m_max_function_value = std::max(m_max_function_value, value);
             }
         }
+        */
+        m_min_function_value = 0;
+        m_max_function_value = (1 << 16) - 1;
     }
 
     Color color_value(ResultType value) {
@@ -66,5 +84,6 @@ private:
     ResultType m_min_function_value;
     ResultType m_max_function_value;
     Renderer m_renderer;
+    bool m_range_changing;
 };
 

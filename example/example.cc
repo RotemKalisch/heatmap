@@ -8,7 +8,7 @@ public:
     using result_type = int32_t;
 
     result_type operator()(uint32_t x, uint32_t y, uint32_t t) {
-        return (x*y + 512*t) & 0x00000FFFF; 
+        return (x*y + 512*t) & 0x0000FFFF; 
     }
     
 };
@@ -19,7 +19,7 @@ int logic() {
 
     std::string title = "f(x, y, t) = x*y + (2^9)*t % 2^16";
 
-    Heatmap heatmap(title, width, height, Function());
+    Heatmap heatmap(title, width, height, Function(), 0, 0x0000FFFF - 1, false);
 
     bool quit = false;
     SDL_Event e;
