@@ -6,9 +6,6 @@
 
 #include "renderer.h"
 
-static const uint8_t MAX_COLOR = 255;
-static const uint8_t NO_COLOR = 0;
-
 template<class HeatmapFunction>
 struct Heatmap {
 public:
@@ -54,6 +51,10 @@ public:
     }
 
 private:
+
+    static const uint8_t MAX_COLOR = 255;
+    static const uint8_t NO_COLOR = 0;
+
     void set_min_and_max(uint32_t t) {
         for (uint32_t i = 0; i < m_width; ++i) {
             for (uint32_t j = 0; j < m_height; ++j) {
