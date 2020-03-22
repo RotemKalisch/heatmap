@@ -55,7 +55,6 @@ public:
 
 private:
     void set_min_and_max(uint32_t t) {
-        /*
         for (uint32_t i = 0; i < m_width; ++i) {
             for (uint32_t j = 0; j < m_height; ++j) {
                 ResultType value = m_function(i, j, t);
@@ -63,9 +62,6 @@ private:
                 m_max_function_value = std::max(m_max_function_value, value);
             }
         }
-        */
-        m_min_function_value = 0;
-        m_max_function_value = (1 << 16) - 1;
     }
 
     Color color_value(ResultType value) {
